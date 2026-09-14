@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle of Nations II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<audio id="main-menu-music" src="Music/Chase.mp3" loop preload="auto"></audio>
+<audio id="game-music" preload="auto"></audio>
+
+<!-- ============================= MAIN MENU ============================= -->
+<div id="main-menu" class="screen">
+  <div class="menu-backdrop-map" id="menu-backdrop-map"></div>
+
+  <div class="menu-seal" id="menu-seal" aria-hidden="true">
+    <svg viewBox="0 0 200 200">
+      <defs>
+        <path id="seal-ring" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/>
+      </defs>
+      <circle class="seal-ring seal-ring-outer" cx="100" cy="100" r="97"/>
+      <circle class="seal-ring seal-ring-mid" cx="100" cy="100" r="85"/>
+      <circle class="seal-ring seal-ring-inner" cx="100" cy="100" r="48"/>
+      <g class="seal-rays">
+        <polygon points="100.0,26.0 103.7,43.1 109.7,26.6"/>
+        <polygon points="119.2,28.5 118.3,46.0 128.3,31.6"/>
+        <polygon points="137.0,35.9 131.7,52.6 145.0,41.3"/>
+        <polygon points="152.3,47.7 142.9,62.4 158.7,55.0"/>
+        <polygon points="164.1,63.0 151.1,74.8 168.4,71.7"/>
+        <polygon points="171.5,80.8 155.9,88.9 173.4,90.3"/>
+        <polygon points="174.0,100.0 156.9,103.7 173.4,109.7"/>
+        <polygon points="171.5,119.2 154.0,118.3 168.4,128.3"/>
+        <polygon points="164.1,137.0 147.4,131.7 158.7,145.0"/>
+        <polygon points="152.3,152.3 137.6,142.9 145.0,158.7"/>
+        <polygon points="137.0,164.1 125.2,151.1 128.3,168.4"/>
+        <polygon points="119.2,171.5 111.1,155.9 109.7,173.4"/>
+        <polygon points="100.0,174.0 96.3,156.9 90.3,173.4"/>
+        <polygon points="80.8,171.5 81.7,154.0 71.7,168.4"/>
+        <polygon points="63.0,164.1 68.3,147.4 55.0,158.7"/>
+        <polygon points="47.7,152.3 57.1,137.6 41.3,145.0"/>
+        <polygon points="35.9,137.0 48.9,125.2 31.6,128.3"/>
+        <polygon points="28.5,119.2 44.1,111.1 26.6,109.7"/>
+        <polygon points="26.0,100.0 43.1,96.3 26.6,90.3"/>
+        <polygon points="28.5,80.8 46.0,81.7 31.6,71.7"/>
+        <polygon points="35.9,63.0 52.6,68.3 41.3,55.0"/>
+        <polygon points="47.7,47.7 62.4,57.1 55.0,41.3"/>
+        <polygon points="63.0,35.9 74.8,48.9 71.7,31.6"/>
+        <polygon points="80.8,28.5 88.9,44.1 90.3,26.6"/>
+      </g>
+      <polygon id="seal-star" points="100,64 107.9,89.1 134.2,88.9 112.8,104.2 121.2,129.1 100,113.5 78.8,129.1 87.2,104.2 65.8,88.9 92.1,89.1"/>
+      <text class="seal-motto">
+        <textPath href="#seal-ring">· PEACE · PROGRESS · SOVEREIGNTY · NATIONS OF THE WORLD</textPath>
+      </text>
+    </svg>
+  </div>
+
+  <div class="menu-banner" aria-hidden="true">
+    <span class="menu-banner-star">&#10022;</span>
+    <span class="menu-banner-text">THE WORLD BUREAU OF NATIONS</span>
+    <span class="menu-banner-star">&#10022;</span>
+  </div>
+
+  <div class="menu-content">
+    <div class="menu-title">
+      <span class="menu-title-line1">BATTLE OF</span>
+      <span class="menu-title-line2">NATIONS <span class="menu-title-roman">II</span></span>
+      <span class="menu-title-rule"></span>
+    </div>
+    <nav class="menu-nav">
+      <button class="menu-btn" id="btn-play">Play</button>
+      <button class="menu-btn menu-btn-secondary" id="btn-how-to-play">How to Play</button>
+      <button class="menu-btn menu-btn-secondary" id="btn-settings">Settings</button>
+    </nav>
+    <div class="menu-quote" id="menu-quote" aria-live="polite">
+      <span class="menu-quote-mark">&#8220;</span>
+      <p class="menu-quote-text" id="menu-quote-text"></p>
+      <span class="menu-quote-author" id="menu-quote-author"></span>
+    </div>
+    <div class="menu-footer">Lead one nation. Watch the rest of the world govern itself.</div>
+  </div>
+</div>
+
+<!-- ========================= COUNTRY SELECT MODAL ======================== -->
+<div id="select-modal" class="modal-overlay hidden">
+  <div class="modal select-modal">
+    <header class="modal-header">
+      <h2>Choose Your Nation</h2>
+      <button class="icon-btn" data-close="select-modal">&times;</button>
+    </header>
+    <div class="select-body">
+      <div class="select-list-pane">
+        <input type="text" id="country-search" placeholder="Search nations..." autocomplete="off">
+        <div id="country-list" class="country-list"></div>
+      </div>
+      <div class="select-info-pane" id="select-info-pane">
+        <div class="select-info-placeholder">Select a nation from the list to preview it here.</div>
+      </div>
+    </div>
+    <footer class="modal-footer">
+      <button class="menu-btn" id="btn-start-game" disabled>Begin as Selected Nation</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============================ HOW TO PLAY ============================ -->
+<div id="howto-modal" class="modal-overlay hidden">
+  <div class="modal howto-modal">
+    <header class="modal-header">
+      <h2>How to Play</h2>
+      <button class="icon-btn" data-close="howto-modal">&times;</button>
+    </header>
+    <div class="howto-body">
+      <section>
+        <h3>Choosing a Nation</h3>
+        <p>Select any nation on Earth to lead. Every other nation is governed by an independent AI, each pursuing its own economic growth, diplomatic standing, and military ambitions.</p>
+      </section>
+      <section>
+        <h3>The Map</h3>
+        <p>Click any territory to open its file: population, treasury, stability, military strength, and its standing with you. Nameplates float above each territory as you zoom in.</p>
+      </section>
+      <section>
+        <h3>Diplomacy</h3>
+        <p>From a nation's file you can Declare War, Request Peace, Send Economic Funds, Improve Relations, or propose an Alliance once relations reach +50. Actions grey out when they don't apply — you can't ally a nation you're at war with, and Declare War locks into a truce for a time after peace is made.</p>
+      </section>
+      <section>
+        <h3>War</h3>
+        <p>Declaring war draws an animated arrow from your territory toward the target. Wars run their course over time; the side with the stronger military, industry, and stability ultimately prevails. The defeated nation is absorbed as a colony of the victor — sharing its color and funding its new master — while any colonies the loser once held are set free.</p>
+      </section>
+      <section>
+        <h3>Governing</h3>
+        <p>Use the Economy panel to set tax policy, the Decisions panel for one-off national actions, and the Political Focus Tree to steer your nation's long-term direction along economic, military, or diplomatic lines.</p>
+      </section>
+      <section>
+        <h3>The AI</h3>
+        <p>AI nations do not wage war at random. They only move against a land neighbor or a nation reachable across the sea — and when a conquest changes the map, that frontier shifts with it.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== SETTINGS ============================== -->
+<div id="settings-modal" class="modal-overlay hidden">
+  <div class="modal settings-modal">
+    <header class="modal-header">
+      <h2>Settings</h2>
+      <button class="icon-btn" data-close="settings-modal">&times;</button>
+    </header>
+    <div class="settings-body">
+      <label class="settings-row">
+        <span>Simulation Speed</span>
+        <input type="range" id="setting-speed" min="0.5" max="3" step="0.5" value="1">
+        <span id="setting-speed-label">1.0x</span>
+      </label>
+      <label class="settings-row">
+        <span>Show Nameplates</span>
+        <input type="checkbox" id="setting-nameplates" checked>
+      </label>
+      <label class="settings-row">
+        <span>Show Minor Nations' Nameplates</span>
+        <input type="checkbox" id="setting-minor-nameplates">
+      </label>
+      <label class="settings-row">
+        <span>Map Decorations</span>
+        <input type="checkbox" id="setting-decorations" checked>
+      </label>
+      <div class="settings-save">
+        <h3>Save</h3>
+        <div id="save-dropzone" class="save-dropzone">
+          <p class="save-dropzone-title">Import a saved game</p>
+          <p class="save-dropzone-sub">Drop a .json save file here, or choose one. Loading resumes the game automatically.</p>
+          <button class="menu-btn menu-btn-secondary" id="btn-import-save">Import Save</button>
+          <input type="file" id="save-file-input" accept=".json,application/json" hidden>
+          <p id="save-status" class="save-status" role="status"></p>
+        </div>
+      </div>
+      <button class="menu-btn menu-btn-secondary" id="btn-return-menu">Return to Main Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ LOAD CONFIRM =========================== -->
+<div id="confirm-save-modal" class="modal-overlay hidden">
+  <div class="modal confirm-save-modal">
+    <header class="modal-header">
+      <h2>Load Saved Game</h2>
+      <button class="icon-btn" id="btn-close-confirm-save">&times;</button>
+    </header>
+    <div class="confirm-save-body">
+      <p id="confirm-save-text"></p>
+    </div>
+    <footer class="modal-footer">
+      <button class="menu-btn" id="btn-load-save">Load Save</button>
+      <button class="menu-btn menu-btn-secondary" id="btn-cancel-save">Cancel</button>
+    </footer>
+  </div>
+</div>
+
+<!-- =========================== ALLIANCE OFFER ============================ -->
+<div id="alliance-modal" class="modal-overlay hidden">
+  <div class="modal alliance-modal">
+    <header class="modal-header">
+      <h2 id="alliance-offer-title">Alliance Proposal</h2>
+      <button class="icon-btn" data-close="alliance-modal">&times;</button>
+    </header>
+    <div class="alliance-offer-body">
+      <p id="alliance-offer-text"></p>
+      <div id="alliance-offer-details" class="alliance-offer-details"></div>
+    </div>
+    <footer class="modal-footer">
+      <button class="menu-btn" id="btn-accept-alliance">Accept Alliance</button>
+      <button class="menu-btn menu-btn-secondary" id="btn-decline-alliance">Decline</button>
+    </footer>
+  </div>
+</div>
+
+<!-- =============================== GAME ROOT ============================== -->
+<div id="game-root" class="screen hidden">
+
+  <!-- HUD -->
+  <header id="hud">
+    <div class="hud-nation" id="hud-nation">
+      <span class="hud-flag" id="hud-flag"></span>
+      <span class="hud-name" id="hud-name">—</span>
+    </div>
+    <div class="hud-stats">
+      <div class="hud-stat" title="Treasury"><span class="hud-stat-label">Treasury</span><span class="hud-stat-value" id="hud-treasury">0</span></div>
+      <div class="hud-stat" title="Stability"><span class="hud-stat-label">Stability</span><span class="hud-stat-value" id="hud-stability">0%</span></div>
+      <div class="hud-stat" title="Military Strength"><span class="hud-stat-label">Military</span><span class="hud-stat-value" id="hud-military">0</span></div>
+      <div class="hud-stat" title="Political Power"><span class="hud-stat-label">Pol. Power</span><span class="hud-stat-value" id="hud-pp">0</span></div>
+    </div>
+    <nav id="top-nav" aria-label="Game panels">
+      <button class="top-nav-btn" data-panel="panel-decisions">Decisions</button>
+      <button class="top-nav-btn" data-panel="panel-economy">Economy</button>
+      <button class="top-nav-btn" data-panel="panel-focus">Political Focus Tree</button>
+      <button class="top-nav-btn" data-panel="panel-government">Government</button>
+      <button class="top-nav-btn" id="top-nav-diplomacy" data-panel="panel-diplomacy" disabled>Diplomacy</button>
+    </nav>
+    <div class="hud-turn">
+      <button class="icon-btn" id="btn-export-save" title="Export save game">&#11015;</button>
+      <button class="icon-btn" id="btn-pause" title="Pause/Resume">&#10074;&#10074;</button>
+      <span id="hud-turn-label" title="Game date">1/1/2026</span>
+    </div>
+  </header>
+
+  <!-- Map -->
+  <main id="map-container">
+    <svg id="map-svg"></svg>
+    <div id="map-tooltip" class="map-tooltip hidden"></div>
+
+    <!-- Player-vs-AI battle HUD (see battle-sim.js) -->
+    <div id="battle-hud" class="battle-hud hidden">
+      <div class="battle-hud-title" id="battle-hud-title">Battle</div>
+      <div class="battle-hud-row">
+        <span class="battle-hud-side battle-hud-att" id="battle-hud-att-name">Attacker</span>
+        <span class="battle-hud-army" id="battle-hud-att-army">0</span>
+      </div>
+      <div class="battle-hud-bar"><div class="battle-hud-bar-fill" id="battle-hud-bar-fill"></div></div>
+      <div class="battle-hud-row">
+        <span class="battle-hud-side battle-hud-vict" id="battle-hud-vict-name">Defender</span>
+        <span class="battle-hud-army" id="battle-hud-vict-army">0</span>
+      </div>
+      <div class="battle-hud-status" id="battle-hud-status"></div>
+    </div>
+  </main>
+
+  <div id="panel-modal" class="panel-modal hidden" role="dialog" aria-modal="true" aria-labelledby="panel-modal-title">
+    <div class="panel-modal-card">
+      <header class="panel-modal-header">
+        <h2 id="panel-modal-title">Decisions</h2>
+        <button class="icon-btn" id="close-panel-modal" title="Close panel">&times;</button>
+      </header>
+      <aside id="side-panel">
+
+        <section id="panel-decisions" class="panel active">
+          <h3>National Decisions</h3>
+          <div id="decisions-list" class="decisions-list"></div>
+        </section>
+
+        <section id="panel-economy" class="panel">
+          <h3>Economy</h3>
+          <div class="economy-grid" id="economy-grid"></div>
+          <label class="settings-row">
+            <span>Tax Rate</span>
+            <input type="range" id="tax-rate" min="10" max="45" step="1" value="25">
+            <span id="tax-rate-label">25%</span>
+          </label>
+        </section>
+
+        <section id="panel-focus" class="panel">
+          <h3>Political Focus Tree</h3>
+          <div id="focus-tree" class="focus-tree"></div>
+        </section>
+
+        <section id="panel-government" class="panel">
+          <div id="government-content"></div>
+        </section>
+
+        <section id="panel-diplomacy" class="panel">
+          <div id="diplomacy-content"></div>
+        </section>
+
+      </aside>
+      <div id="dip-tooltip" class="map-tooltip hidden"></div>
+    </div>
+  </div>
+
+  <div id="event-feed" class="event-feed"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="nations.js"></script>
+<script src="ai.js"></script>
+<script src="battle-sim.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
+
