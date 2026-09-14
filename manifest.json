@@ -1,0 +1,18 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Battle of Nations 2",
+  "orientation": "landscape",
+  "scope": "/",
+  "short_name": "BON2",
+  "start_url": "https://japanflagpiggy.github.io/Battle-of-Nations-II/",
+  "theme_color": "#ffffff",
+  "id": "BONII",
+  "categories": [
+    "entertainment",
+    "games",
+    "politics"
+  ],
+  "lang": "en"
+}
